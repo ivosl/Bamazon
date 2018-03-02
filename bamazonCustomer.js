@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
     user: "root",
     
     // Your password or leave it blank if no password is required
-    password: "",
+    password: "Havefun102",
     database: "bamazonDB"
 });
 
@@ -98,6 +98,7 @@ function start() {
                                 start();
                             } else {
                                 console.log("\n" + "\x1b[34mBye! Come again!\x1b[0m");
+                                connection.end();
                             }
                         });
                     }
@@ -118,6 +119,7 @@ function start() {
                         start();
                     } else {
                         console.log("\n" + "\x1b[34mBye! Come again!\x1b[0m");
+                        connection.end();
                     }
                 }); 
             }
