@@ -2,9 +2,9 @@
 
 ## Amazon-like storefront utilizing MySQL Node.js and Javascript skills.
 
-### There are 2 views of the app Customer View and Manager View.
+### There are 2 views of the app - Customer View and Manager View.
 
-### **Customer View:**###
+----------------------------------------------------**Customer View:**----------------------------------------------------
 
 This view will take in orders from customers and deplete stock from the store's inventory.
 
@@ -33,7 +33,8 @@ If answer is yes, it starts over. If the answer is no it exits with "Good Buy" m
 
 ![Another order](/images/another_order.png)
 
-###**Manager View:**###
+
+----------------------------------------------------**Manager View:**----------------------------------------------------
 
 This view will offer the manager to view, filter, update quantity or add new products.
 
@@ -69,10 +70,10 @@ Update is confirmed and changes displayed:
 
 ![Confirm Quantity](/images/quantityConfirm.png)
 
-Last forth option allows for adding a new product to the inventory
+Last - forth option allows for adding a new product to the inventory
 Addition is reflected in the table and displayed in the terminal:
 
-![New Product](/images/quantityConfirm.png)
+![New Product](/images/newProduct.png)
 
 
 
