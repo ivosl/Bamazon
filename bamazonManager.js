@@ -24,7 +24,7 @@ connection.connect(function(err) {
     // run the start function after the connection is made to prompt the manager
     start();
 });
-// function which prompts the manager for what action they should take
+// function which prompts the manager to choose an option from the list
 function start() {
     inquirer
     .prompt({
@@ -33,53 +33,108 @@ function start() {
         message: "Please make a choice from the list below:",
         choices: ["VIEW PRODUCTS FOR SALE", "VIEW LOW INVENTORY", "ADD TO INVENTORY", "ADD NEW PRODUCT"]
     })
+    //depending on the answer it call different functions
     .then(function(answer) {
         // based on their answer, either call the bid or the post functions
         if (answer.action.toUpperCase() === "VIEW PRODUCTS FOR SALE") {
-            console.log(1);
             viewProducts();
         }
         else if(answer.action.toUpperCase() === "VIEW LOW INVENTORY") {
-            console.log(2);
             viewLowInventory();
         }
         else if(answer.action.toUpperCase() === "ADD TO INVENTORY") {
-            console.log(3);
             addToInventory();
         }
         else {
-            console.log(4);
             addNewProduct();
         }
     });
 }
-
+//this function is called every time the manager finishes with his task of choice
+//it offers options to go back to main menu or exit the app
+function followUp() {
+    inquirer
+    .prompt({
+        name: "action",
+        type: "rawlist",
+        message: "What do you want to do next:",
+        choices: ["GO TO MAIN MENU", "EXIT"]
+    })
+    .then(function(answer) {
+        // based on their answer, either call the bid or the post functions
+        if (answer.action.toUpperCase() === "GO TO MAIN MENU") {
+            start();
+        }                
+        else {
+            console.log("\n" + "\x1b[34mExiting...See you soon!\x1b[0m" + "\n");
+            connection.end();
+        }
+    });
+}
+//this function shows all the products in inventory in a table for better viewing
 function viewProducts(){
     console.log("Selecting all products...\n");
     connection.query("SELECT * FROM products", function(err, res) {
         if (err) throw err;
-        // Log all results of the SELECT statement
-        console.log(res);
-        connection.end();
+        console.table(res);
+        console.log("\n" + "\x1b[32m↑ The Requested Information Is In the Table Above ↑ \x1b[0m" + "\n");
+        
+        followUp();        
     });
 }
 
+//this function list all items with an inventory 
+//count of a range that manager sets in the prompt questions 
 function viewLowInventory(){
-    console.log("Selecting products with inventory lower than 5...\n");
-    connection.query("SELECT * FROM products WHERE stock_quantity BETWEEN 0 and 20",  function(err, res) { 
-        if (err) throw err;
-        // Log all results of the SELECT statement
-        console.log(res);
-        connection.end();
+    inquirer
+    .prompt([
+        {
+            name: "minQuantity",
+            type: "input",
+            message: "Choose a MIN inventory quantity?",
+            validate: function(value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
+            }
+        },
+        {
+            name: "maxQuantity",
+            type: "input",
+            message: "Choose a MAX inventory quantity?",
+            validate: function(value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
+            }
+        }
+    ])
+    .then(function(answer) {
+        console.log("\n Processing your request... \n")
+        connection.query(
+            "SELECT * FROM products WHERE stock_quantity BETWEEN ? and ?", 
+            [answer.minQuantity, answer.maxQuantity],
+            function(err, res) { 
+                if (err) throw err;
+                console.table(res);
+                console.log("\n" + "\x1b[32m↑ Selected products above are with inventory count higher than " 
+                + answer.minQuantity + " and lower than " + answer.maxQuantity + "\x1b[0m" + "\n");
+                
+                followUp();
+            }
+        );
     });
 }
 
+//this function adds more quantity of any item currently in inventory
 function addToInventory() {
     connection.query("SELECT * FROM products", function(err, results) {
         if (err) throw err;
         //displays the table with the available inventory
         console.table(results);
-        // once the items are displayed, prompt the user for which they'd like to buy 
+        // once the items are displayed, prompt the manager which product he wants to update
         inquirer
         .prompt([
             {
@@ -92,9 +147,9 @@ function addToInventory() {
                     }
                     return productsArray;
                 },
-                message: "What product would you like to update?"
+                message: "What product from the table above would you like to update?"
             },
-            //prompt for quantity that user wants to purchase
+            //prompt for quantity that manager wants to add
             {
                 name: "quantity",
                 type: "input",
@@ -115,8 +170,7 @@ function addToInventory() {
                     chosenItem = results[i];
                 }
             }
-            
-            console.log("Updating quantities...\n");
+            console.log("\n" + "Updating quantities...\n");
             var query = connection.query(
                 "UPDATE products SET ? WHERE ?",
                 [
@@ -129,19 +183,19 @@ function addToInventory() {
                 ],
                 function(err) {
                     if (err) throw err;
-                    console.log("products updated!\n");
+                    console.log("\x1b[32m" + answer.quantity + " more " + chosenItem.product_name + " successfully added to inventory" + "\x1b[0m\n");
+                    console.log("\x1b[34m" + "Now you have a total of " + (parseInt(chosenItem.stock_quantity) + parseInt(answer.quantity)) 
+                    + " " + chosenItem.product_name + " in your inventory" + "\x1b[0m\n");
+                    
+                    followUp(); 
                 }
             );
-            
-            // logs the actual query being run
-            console.log(query.sql);
         });
     });
 }   
-
-function addNewProduct() {
-    
-    // prompt for info about the item being put up for auction
+// this function allows the manager to add a completely new product to the store
+function addNewProduct() { 
+    // prompt for info about the product being added to inventory
     inquirer
     .prompt([
         {
@@ -189,9 +243,9 @@ function addNewProduct() {
             },
             function(err) {
                 if (err) throw err;
-                console.log("The product was added successfully!");
-                // re-prompt the user for if they want to bid or post
-                start();
+                console.log("\n" + "\x1b[32m" + answer.quantity + " " + answer.product + " at $" + answer.price + " each in " + answer.department + " department are successfully added to inventory" + "\x1b[0m\n");
+                
+                followUp();
             }
         );
     });
