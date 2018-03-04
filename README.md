@@ -4,7 +4,9 @@
 
 ### There are 2 views of the app - Customer View and Manager View.
 
-----------------------------------------------------**CUSTOMER VIEW:**----------------------------------------------------
+
+
+--------------------------------------------------- **CUSTOMER VIEW:** -------------------------------------------------
 
 This view will take in orders from customers and deplete stock from the store's inventory.
 
@@ -30,7 +32,8 @@ If answer is yes, it starts over. If the answer is no it exits with "Good Buy" m
 ![Another order](/images/another_order.png)
 
 
-----------------------------------------------------**MANAGER VIEW:**----------------------------------------------------
+
+--------------------------------------------------- **MANAGER VIEW:** --------------------------------------------------
 
 This view will offer the manager to view, filter, update quantity or add new products.
 
