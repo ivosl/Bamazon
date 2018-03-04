@@ -4,7 +4,7 @@
 
 ### There are 2 views of the app - Customer View and Manager View.
 
-----------------------------------------------------**Customer View:**----------------------------------------------------
+----------------------------------------------------**CUSTOMER VIEW:**----------------------------------------------------
 
 This view will take in orders from customers and deplete stock from the store's inventory.
 
@@ -15,10 +15,6 @@ It starts with displaying the inventory in a table and prompting the user to cho
 If the quantity ordered is bigger than what's available in the inventory then "Insufficient Quantity" Message is displayed and prompts if user want to revise the quantity or choose another item:
 
 ![Insufficient Quantity](/images/insufficient_quantity.png)
-
-If the user choses an item with 0 inventory - it displays a message that this item is out of stock, removes it from the table, and prompts if the user wants to buy another item:
-
-![Out of Stock](/images/outOfStock.png)
 
 If there is enough quantity in inventory, it fills the order and calculates the total:
 
@@ -34,7 +30,7 @@ If answer is yes, it starts over. If the answer is no it exits with "Good Buy" m
 ![Another order](/images/another_order.png)
 
 
-----------------------------------------------------**Manager View:**----------------------------------------------------
+----------------------------------------------------**MANAGER VIEW:**----------------------------------------------------
 
 This view will offer the manager to view, filter, update quantity or add new products.
 

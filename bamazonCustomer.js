@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
     user: "root",
     
     // Your password or leave it blank if no password is required
-    password: "",
+    password: "Havefun102",
     database: "bamazonDB"
 });
 
@@ -68,39 +68,9 @@ function start() {
                 if (results[i].product_name === answer.id) {
                     chosenItem = results[i];
                 }
-            }
-            //if the chosen item has an inventory of 0 user is informed 
-            //and prompted if he wants to choose another item
-            if (chosenItem.stock_quantity === 0){
-                connection.query(
-                    "DELETE FROM products WHERE ?",
-                    {
-                        stock_quantity: 0
-                    },
-                    function(err, res) {
-                        console.log("\n" + "\x1b[31mSorry but we are out of stock of your selected item currently.\x1b[0m\n");
-                        
-                        inquirer.prompt([{
-                            name: 'order',
-                            type: 'confirm',
-                            message: 'Would you like to choose another item?'
-                        }]).then(function (response) {
-                            if (response.order) {
-                                console.log("\n" + "\x1b[34mPlease see the available quantities in the table!\x1b[0m");
-                                //if confirmed that user want to choose another item restart the app
-                                start();
-                            } else {
-                                console.log("\n" + "\x1b[34mBye! Come again!\x1b[0m");
-                                //exit
-                                connection.end();
-                            }
-                        }); 
-                    }
-                );
-            }
-            
-            //if there is enough inventory from the chosen item proceed with the sale
-            else if (chosenItem.stock_quantity >= parseInt(answer.quantity)) {
+            }            
+            //checking if there is enough inventory from the chosen item to proceed with the sale
+            if (chosenItem.stock_quantity >= parseInt(answer.quantity)) {
                 connection.query(
                     "UPDATE products SET ? WHERE ?",
                     [
@@ -158,5 +128,3 @@ function start() {
         });
     });
 }
-
-
