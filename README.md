@@ -69,7 +69,7 @@ Update is confirmed and changes displayed:
 
 ![Confirm Quantity](/images/quantityConfirm.png)
 
-Last - forth option allows for adding a new product to the inventory
+Last - forth option allows for adding a new product to the inventory.
 Addition is reflected in the table and displayed in the terminal:
 
 ![New Product](/images/newProduct.png)
